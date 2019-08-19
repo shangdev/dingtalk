@@ -2,17 +2,12 @@
 
 namespace EasyDingTalk;
 
-use Pimple\Container;
+use EasyDingTalk\Kernal\ServiceContainer;
 
-class Application extends Container
+class Application extends ServiceContainer
 {
     /**
      * @var array
      */
     protected $providers = [];
-
-    public function __constract()
-    {
-        parent::__constract();
-    }
 }
