@@ -21,7 +21,7 @@ class ServiceContainer extends Container
 	protected $userConfig = [];
 
 	/**
-	 * Construtor.
+	 * Constructor.
 	 *
 	 * @param array $config
 	 * @param array $values
