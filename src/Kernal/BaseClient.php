@@ -31,7 +31,7 @@ class BaseClient
 	 */
 	public function httpGet(string $path, array $query = [])
 	{
-		return $this->request($path, 'GET', ['query' => $query]);
+		return $this->request('GET', $path, ['query' => $query]);
 	}
 
 	/**
@@ -44,7 +44,7 @@ class BaseClient
 	 */
 	public function httpPost(string $path, array $params = [])
 	{
-		return $this->request($path, 'POST', ['form_params' => $params]);
+		return $this->request('POST', $path, ['form_params' => $params]);
 	}
 
 	/**
@@ -58,7 +58,7 @@ class BaseClient
 	 */
 	public function httpPostJson(string $path, array $query = [], array $params = [])
 	{
-		return $this->request($path, 'POST', ['query' => $query, 'json' => $params]);
+		return $this->request('POST', $path, ['query' => $query, 'json' => $params]);
 	}
 
 	/**
@@ -81,7 +81,7 @@ class BaseClient
 			];
 		}
 
-		return $this->request($path, 'POST', [
+		return $this->request('POST', $path, [
 			'query'           => $query,
 			'multipart'       => $multipart,
 			'connect_timeout' => 30,
@@ -91,13 +91,13 @@ class BaseClient
 	}
 
 	/**
-	 * @param string $path
 	 * @param string $method
+	 * @param string $path
 	 * @param array  $options
 	 *
 	 * @return RequestInterface
 	 */
-	public function request(string $path, string $method = 'GET', array $options = []): RequestInterface
+	public function request(string $method, string $path, array $options = []): RequestInterface
 	{
 		$method = strtoupper($method);
 
