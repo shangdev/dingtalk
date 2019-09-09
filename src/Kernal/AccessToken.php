@@ -3,6 +3,7 @@
 namespace EasyDingTalk\Kernal;
 
 use EasyDingTalk\Kernal\Contracts\AccessTokenInterface;
+use EasyDingTalk\Kernal\Exceptions\RuntimeException;
 use EasyDingTalk\Kernal\Traits\InteractsWithCache;
 
 abstract class AccessToken implements AccessTokenInterface
@@ -27,6 +28,16 @@ abstract class AccessToken implements AccessTokenInterface
 	/**
 	 * @var string
 	 */
+	protected $tokenKey = 'access_token';
+
+	/**
+	 * @var int
+	 */
+	protected $safeSeconds = 300;
+
+	/**
+	 * @var string
+	 */
 	protected $cachePrefix = 'easyDD.kernal.access_token.';
 
 	/**
@@ -38,27 +49,23 @@ abstract class AccessToken implements AccessTokenInterface
 	}
 
 	/**
-	 * Credential for get token.
-	 *
-	 * @return array
-	 */
-	abstract protected function getCredential(): array;
-
-	/**
 	 * @param bool $refresh
 	 *
 	 * @return array
+	 * @throws RuntimeException
 	 */
 	public function getToken(bool $refresh = false)
 	{
 		$cacheKey = $this->getCacheKey();
-		$cache = $this->getCache();
+		$cache    = $this->getCache();
 
 		if (!$refresh && $cache->has($cacheKey)) {
 			return $cache->get($cacheKey);
 		}
 
-		$token = $this->requestToken($this->getCredential(), true);
+		$token = $this->requestToken($this->getCredentials(), true);
+
+		$this->setToken($token[$this->tokenKey], $token['expires_in'] ?? 7200);
 
 		return $token;
 	}
@@ -66,12 +73,28 @@ abstract class AccessToken implements AccessTokenInterface
 	/**
 	 * @param string $token
 	 * @param int    $expires
+	 *
+	 * @return AccessTokenInterface
+	 * @throws RuntimeException
 	 */
-	public function setToken(string $token, int $expires = 7200)
+	public function setToken(string $token, int $expires = 7200): AccessTokenInterface
 	{
+		$this->getCache()->set($this->getCacheKey(), [
+			$this->tokenKey => $token,
+			'expires_in'    => $expires,
+		], $expires - $this->safeSeconds);
 
+		if (!$this->getCache()->has($this->getCacheKey())) {
+			throw new RuntimeException('Failed to cache access token.');
+		}
+
+		return $this;
 	}
 
+	/**
+	 * @return AccessTokenInterface
+	 * @throws RuntimeException
+	 */
 	public function refreshToken()
 	{
 		$this->getToken(true);
@@ -92,13 +115,20 @@ abstract class AccessToken implements AccessTokenInterface
 		];
 
 		$response = $this->app['http_client']->request($this->requestMethod, $this->endpoint, $options);
-		$result = json_decode($response->getBody()->getContents(), $toArray);
+		$result   = json_decode($response->getBody()->getContents(), $toArray);
 
 		return $result;
 	}
 
 	protected function getCacheKey()
 	{
-		return $this->cachePrefix . md5(json_encode($this->getCredential()));
+		return $this->cachePrefix . md5(json_encode($this->getCredentials()));
 	}
+
+	/**
+	 * Credential for get token.
+	 *
+	 * @return array
+	 */
+	abstract protected function getCredentials(): array;
 }
