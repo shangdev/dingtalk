@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyDingTalk\Kernal;
+namespace Rateltalk\DingTalk\Kernal;
 
 use Psr\Http\Message\RequestInterface;
 
@@ -104,11 +104,13 @@ class BaseClient
 		$response = $this->app['http_client']->request($method, $path, $options);
 		$response = $response->getBody()->rewind();
 
-		$this->app['log']->info('API response:', [
-			'Status'  => $response->getStatusCode(),
-			'Reason'  => $response->getReasonPhrase(),
-			'Headers' => $response->getHeaders(),
-			'Body'    => strval($response->getBody()),
+		// 使用 monolog context 传递一个数组格式的数据
+		$this->app['logger']->info('API response', [
+			'statusCode'      => $response->getStatusCode(), // 状态码
+			'reasonPhrase'    => $response->getReasonPhrase(), // 原因短语
+			'headers'         => $response->getHeaders(), // 头信息
+			'body'            => $response->getBody(), // 主题部分
+			'protocolVersion' => $response->getProtocolVersion(), // 协议
 		]);
 
 		return $response;

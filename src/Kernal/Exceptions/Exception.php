@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyDingTalk\Kernal\Exceptions;
+namespace Rateltalk\DingTalk\Kernal\Exceptions;
 
 class Exception extends \Exception
 {

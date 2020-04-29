@@ -1,7 +1,8 @@
 <?php
 
-namespace EasyDingTalk\Kernal\Providers;
+namespace Rateltalk\DingTalk\Kernal\Providers;
 
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -9,12 +10,16 @@ use Pimple\ServiceProviderInterface;
 class LogServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @param \Pimple\Container $pimple A container instance.
+     * @param Container $pimple A container instance.
      */
     public function register(Container $pimple)
     {
         $pimple['logger'] = $pimple['log'] = function ($app) {
-            return new Logger('EasyDingTalk');
+        	// 创建日志服务
+			$log = new Logger('EasyDD');
+			$log->pushHandler(new StreamHandler('/tmp/easyDD.log', Logger::DEBUG));
+
+            return $log;
         };
     }
 }

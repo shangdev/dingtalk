@@ -2,14 +2,10 @@
     "name": "shangdev/dingtalk",
     "description": "DingTalk SDK",
     "keywords": [
-        "sdk",
-        "dingding",
-        "dingding-sdk",
         "dingtalk",
         "dingtalk-sdk"
     ],
     "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "shangdev",
@@ -30,15 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "EasyDingTalk\\": "src/"
+            "Rateltalk\\DingTalk\\": "src/"
         }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "EasyDingTalk\\Tests\\": "tests/"
-        }
-    },
-    "scripts": {
-        "test": "vender/bing/phpunit"
     }
 }

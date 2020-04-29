@@ -1,10 +1,10 @@
 <?php
 
-namespace EasyDingTalk\Kernal;
+namespace Rateltalk\DingTalk\Kernal;
 
-use EasyDingTalk\Kernal\Contracts\AccessTokenInterface;
-use EasyDingTalk\Kernal\Exceptions\RuntimeException;
-use EasyDingTalk\Kernal\Traits\InteractsWithCache;
+use Rateltalk\DingTalk\Kernal\Contracts\AccessTokenInterface;
+use Rateltalk\DingTalk\Kernal\Exceptions\RuntimeException;
+use Rateltalk\DingTalk\Kernal\Traits\InteractsWithCache;
 
 abstract class AccessToken implements AccessTokenInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyDingTalK\Kernal\Traits;
+namespace Rateltalk\DingTalK\Kernal\Traits;
 
 use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;

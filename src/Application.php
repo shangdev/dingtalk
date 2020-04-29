@@ -1,13 +1,39 @@
 <?php
 
-namespace EasyDingTalk;
+namespace Rateltalk\DingTalk;
 
-use EasyDingTalk\Kernal\ServiceContainer;
+use Pimple\Container;
+use Rateltalk\DingTalk\Kernal\Utils\Collection;
 
-class Application extends ServiceContainer
+class Application extends Container
 {
     /**
-     * @var array
+     * @property \Rateltalk\Dingtalk\Robot\Client $robot
      */
-    protected $providers = [];
+    protected $providers = [
+    	Robot\ServiceProvider::class,
+		Kernal\Providers\ConfigServiceProvider::class,
+		Kernal\Providers\LogServiceProvider::class,
+		Kernal\Providers\HttpClientServiceProvider::class,
+		Kernal\Providers\RequestServiceProvider::class,
+	];
+
+	/**
+	 * Application constructor.
+	 *
+	 * @param array $config
+	 * @param array $values
+	 */
+	public function __construct(array $config = [], array $values = [])
+	{
+		parent::__construct($values);
+
+		$this['config'] = function () use ($config) {
+			return new Collection($config);
+		};
+
+		foreach ($this->providers as $provider) {
+			parent::register(new $provider());
+		}
+	}
 }

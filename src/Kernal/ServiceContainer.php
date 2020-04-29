@@ -1,12 +1,12 @@
 <?php
 
-namespace EasyDingTalk\Kernal;
+namespace Rateltalk\DingTalk\Kernal;
 
 use Pimple\Container;
-use EasyDingTalk\Kernal\Providers\ConfigServiceProvider;
-use EasyDingTalk\Kernal\Providers\LogServiceProvider;
-use EasyDingTalk\Kernal\Providers\RequestServiceProvider;
-use EasyDingTalk\Kernal\Providers\HttpClientServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\ConfigServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\LogServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\RequestServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\HttpClientServiceProvider;
 
 class ServiceContainer extends Container
 {
@@ -37,15 +37,30 @@ class ServiceContainer extends Container
 
 	/**
 	 * @return array
+	 * @urls https://guzzle-cn.readthedocs.io/zh_CN/latest/quickstart.html
 	 */
 	public function getConfig()
 	{
 		$base = [
-			// https://guzzle-cn.readthedocs.io/zh_CN/latest/quickstart.html
 			'http' => [
-				'timeout'  => 30.0,
+				'timeout'  => 2.0,
 				'base_uri' => 'https://oapi.dingtalk.com/',
-			]
+			],
+			'log'  => [
+				'default'  => 'dev',
+				'channels' => [
+					'dev'  => [
+						'driver' => 'single',
+						'path'   => '/tmp/easyDD.log',
+						'level'  => 'debug',
+					],
+					'prod' => [
+						'driver' => 'daily',
+						'path'   => '/tmp/easyDD.log',
+						'level'  => 'info',
+					],
+				],
+			],
 		];
 
 		return array_replace_recursive($base, $this->userConfig);

@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyDingTalk\Kernal\Contracts;
+namespace Rateltalk\DingTalk\Kernal\Contracts;
 
 interface AccessTokenInterface
 {

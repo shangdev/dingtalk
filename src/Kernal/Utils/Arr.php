@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyDingTalk\Kernal\Utils;
+namespace Rateltalk\DingTalk\Kernal\Utils;
 
 class Arr
 {

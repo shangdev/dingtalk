@@ -1,8 +1,8 @@
 <?php
 
-namespace EasyDingTalk\Kernal\Utils;
+namespace Rateltalk\DingTalk\Kernal\Utils;
 
-class Colletcion
+class Collection
 {
 	/**
 	 * The collection data.
