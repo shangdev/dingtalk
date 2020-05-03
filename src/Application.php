@@ -3,7 +3,11 @@
 namespace Rateltalk\DingTalk;
 
 use Pimple\Container;
-use Rateltalk\DingTalk\Kernal\Utils\Collection;
+use Rateltalk\DingTalk\Kernal\Providers\AccessTokenServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\ConfigServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\HttpClientServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\LogServiceProvider;
+use Rateltalk\DingTalk\Kernal\Providers\RequestServiceProvider;
 
 class Application extends Container
 {
@@ -12,11 +16,12 @@ class Application extends Container
      */
     protected $providers = [
     	Robot\ServiceProvider::class,
-		Kernal\Providers\ConfigServiceProvider::class,
-		Kernal\Providers\LogServiceProvider::class,
-		Kernal\Providers\HttpClientServiceProvider::class,
-		Kernal\Providers\RequestServiceProvider::class,
 	];
+
+	/**
+	 * @var array
+	 */
+	protected $userConfig = [];
 
 	/**
 	 * Application constructor.
@@ -26,13 +31,49 @@ class Application extends Container
 	 */
 	public function __construct(array $config = [], array $values = [])
 	{
+		$this->registerProviders($this->getProviders());
+
+		$this->userConfig = $config;
+
 		parent::__construct($values);
+	}
 
-		$this['config'] = function () use ($config) {
-			return new Collection($config);
-		};
+	/**
+	 * @return array
+	 * @url https://guzzle-cn.readthedocs.io/zh_CN/latest/quickstart.html
+	 */
+	public function getConfig()
+	{
+		$base = [
+			'http' => [
+				'timeout'  => 30.0,
+				'base_uri' => 'https://oapi.dingtalk.com/',
+			]
+		];
 
-		foreach ($this->providers as $provider) {
+		return array_replace_recursive($base, $this->userConfig);
+	}
+
+	/**
+	 * Return all providers.
+	 */
+	public function getProviders()
+	{
+		return array_merge([
+			ConfigServiceProvider::class,
+			AccessTokenServiceProvider::class,
+			LogServiceProvider::class,
+			HttpClientServiceProvider::class,
+			RequestServiceProvider::class,
+		], $this->providers);
+	}
+
+	/**
+	 * @param array $providers
+	 */
+	public function registerProviders(array $providers)
+	{
+		foreach ($providers as $provider) {
 			parent::register(new $provider());
 		}
 	}

@@ -4,7 +4,7 @@ namespace Rateltalk\DingTalk\Kernal\Providers;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Rateltalk\DingTalk\Kernal\Utils\Colletcion;
+use Rateltalk\DingTalk\Kernal\Utils\Collection;
 
 class ConfigServiceProvider implements ServiceProviderInterface
 {
@@ -14,7 +14,7 @@ class ConfigServiceProvider implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['config'] = function ($app) {
-            return new Colletcion($app->getConfig());
+            return new Collection($app->getConfig());
         };
     }
 }

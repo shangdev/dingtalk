@@ -1,6 +1,10 @@
 <?php
 
-namespace Rateltalk\Dingtalk\Robot;
+/**
+ * 机器人模块
+ */
+
+namespace Rateltalk\DingTalk\Robot;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;

@@ -2,16 +2,15 @@
 
 namespace Rateltalk\DingTalk\Kernal;
 
-use Rateltalk\DingTalk\Kernal\Contracts\AccessTokenInterface;
 use Rateltalk\DingTalk\Kernal\Exceptions\RuntimeException;
 use Rateltalk\DingTalk\Kernal\Traits\InteractsWithCache;
 
-abstract class AccessToken implements AccessTokenInterface
+class AccessToken
 {
 	use InteractsWithCache;
 
 	/**
-	 * @var ServiceContainer
+	 * @var \Rateltalk\DingTalk\Application $app
 	 */
 	protected $app;
 
@@ -41,9 +40,9 @@ abstract class AccessToken implements AccessTokenInterface
 	protected $cachePrefix = 'easyDD.kernal.access_token.';
 
 	/**
-	 * @param ServiceContainer $app
+	 * @param \Rateltalk\DingTalk\Application $app
 	 */
-	public function __construct(ServiceContainer $app)
+	public function __construct($app)
 	{
 		$this->app = $app;
 	}
@@ -124,11 +123,4 @@ abstract class AccessToken implements AccessTokenInterface
 	{
 		return $this->cachePrefix . md5(json_encode($this->getCredentials()));
 	}
-
-	/**
-	 * Credential for get token.
-	 *
-	 * @return array
-	 */
-	abstract protected function getCredentials(): array;
 }

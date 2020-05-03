@@ -2,9 +2,9 @@
 
 namespace Rateltalk\DingTalk\Kernal\Providers;
 
-use GuzzleHttp\Client;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Rateltalk\DingTalk\Kernal\Http\Client;
 
 class HttpClientServiceProvider implements ServiceProviderInterface
 {
@@ -13,8 +13,8 @@ class HttpClientServiceProvider implements ServiceProviderInterface
 	 */
 	public function register(Container $pimple)
 	{
-		$pimple['http_client'] = function ($app) {
-			return new Client($app['config']->get('http', []));
+		isset($pimple['http_client']) || $pimple['http_client'] = function ($app) {
+			return new Client($app);
 		};
 	}
 }
