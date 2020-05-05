@@ -4,7 +4,7 @@ namespace Rateltalk\DingTalk\Kernal\Providers;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Rateltalk\DingTalk\Kernal\Http\Client;
+use Rateltalk\DingTalk\Kernal\Client;
 
 class HttpClientServiceProvider implements ServiceProviderInterface
 {

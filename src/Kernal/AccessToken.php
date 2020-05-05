@@ -2,10 +2,11 @@
 
 namespace Rateltalk\DingTalk\Kernal;
 
+use Rateltalk\DingTalk\Kernal\Contracts\AccessTokenInterface;
 use Rateltalk\DingTalk\Kernal\Exceptions\RuntimeException;
 use Rateltalk\DingTalk\Kernal\Traits\InteractsWithCache;
 
-class AccessToken
+class AccessToken implements AccessTokenInterface
 {
 	use InteractsWithCache;
 
@@ -22,7 +23,7 @@ class AccessToken
 	/**
 	 * @var
 	 */
-	protected $endpoint;
+	protected $endpoint = 'https://oapi.dingtalk.com/gettoken';
 
 	/**
 	 * @var string
@@ -37,7 +38,7 @@ class AccessToken
 	/**
 	 * @var string
 	 */
-	protected $cachePrefix = 'easyDD.kernal.access_token.';
+	protected $cachePrefix = 'dingtalk.access_token.';
 
 	/**
 	 * @param \Rateltalk\DingTalk\Application $app
@@ -66,17 +67,16 @@ class AccessToken
 
 		$this->setToken($token[$this->tokenKey], $token['expires_in'] ?? 7200);
 
-		return $token;
+		return $token[$this->tokenKey];
 	}
 
 	/**
 	 * @param string $token
 	 * @param int    $expires
 	 *
-	 * @return AccessTokenInterface
 	 * @throws RuntimeException
 	 */
-	public function setToken(string $token, int $expires = 7200): AccessTokenInterface
+	public function setToken(string $token, int $expires = 7200)
 	{
 		$this->getCache()->set($this->getCacheKey(), [
 			$this->tokenKey => $token,
@@ -91,7 +91,6 @@ class AccessToken
 	}
 
 	/**
-	 * @return AccessTokenInterface
 	 * @throws RuntimeException
 	 */
 	public function refreshToken()
@@ -119,8 +118,16 @@ class AccessToken
 		return $result;
 	}
 
-	protected function getCacheKey()
+	public function getCacheKey()
 	{
 		return $this->cachePrefix . md5(json_encode($this->getCredentials()));
+	}
+
+	public function getCredentials()
+	{
+		return [
+			'appkey'    => $this->app['config']['app_key'],
+			'appsecret' => $this->app['config']['app_secret'],
+		];
 	}
 }

@@ -22,6 +22,6 @@ class BaseClient
 	public function __construct($app)
 	{
 		$this->app    = $app;
-		$this->client = $this->app['http_client']->withAccessTokenMiddleware();
+		$this->client = $this->app['http_client']->withAccessTokenMiddleware()->withRetryMiddleware();
 	}
 }

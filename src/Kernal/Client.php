@@ -2,8 +2,10 @@
 
 namespace Rateltalk\DingTalk\Kernal;
 
+use GuzzleHttp\Middleware;
 use Overtrue\Http\Client as BaseClient;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Client extends BaseClient
 {
@@ -23,6 +25,7 @@ class Client extends BaseClient
 	}
 
 	/**
+	 * 添加 access_token 到参数中
 	 * @return $this
 	 */
 	public function withAccessTokenMiddleware()
@@ -33,11 +36,11 @@ class Client extends BaseClient
 
 		$middleware = function (callable $handler) {
 			return function (RequestInterface $request, array $options) use ($handler) {
-				if ($this->app['access_token']) {
+				if ($this->app['auth']) {
 					parse_str($request->getUri()->getQuery(), $query);
 
 					$request = $request->withUri(
-						$request->getUri()->withQuery(http_build_query(['access_token' => $this->app['access_token']->getToken()] + $query))
+						$request->getUri()->withQuery(http_build_query(['access_token' => $this->app['auth']->getToken()] + $query))
 					);
 				}
 
@@ -46,6 +49,37 @@ class Client extends BaseClient
 		};
 
 		$this->pushMiddleware($middleware, 'access_token');
+
+		return $this;
+	}
+
+	/**
+	 * 刷新 access_token
+	 * @return $this
+	 */
+	public function withRetryMiddleware()
+	{
+		if ($this->getMiddlewares()['retry']) {
+			return $this;
+		}
+
+		$middleware = Middleware::retry(function (
+			$retries,
+			RequestInterface $request,
+			ResponseInterface $response = null
+		) {
+			if (is_null($response) || $retries < 1) {
+				return false;
+			}
+
+			if (in_array(json_decode($response->getBody(), true)['errcode'] ?? null, [40001])) {
+				$this->app['auth']->refreshToken();
+			}
+
+			return true;
+		});
+
+		$this->pushMiddleware($middleware, 'retry');
 
 		return $this;
 	}

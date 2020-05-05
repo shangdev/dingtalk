@@ -10,7 +10,7 @@ class AccessTokenServiceProvider implements ServiceProviderInterface
 {
 	public function register(Container $pimple)
 	{
-		isset($pimple['access_token']) || $pimple['access_token'] = function ($app) {
+		isset($pimple['auth']) || $pimple['auth'] = function ($app) {
 			return new AccessToken($app);
 		};
 	}
