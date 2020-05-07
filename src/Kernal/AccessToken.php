@@ -71,9 +71,20 @@ class AccessToken implements AccessTokenInterface
 	}
 
 	/**
+	 * @throws RuntimeException
+	 */
+	public function refreshToken()
+	{
+		$this->getToken(true);
+
+		return $this;
+	}
+
+	/**
 	 * @param string $token
 	 * @param int    $expires
 	 *
+	 * @return $this
 	 * @throws RuntimeException
 	 */
 	public function setToken(string $token, int $expires = 7200)
@@ -86,16 +97,6 @@ class AccessToken implements AccessTokenInterface
 		if (!$this->getCache()->has($this->getCacheKey())) {
 			throw new RuntimeException('Failed to cache access token.');
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @throws RuntimeException
-	 */
-	public function refreshToken()
-	{
-		$this->getToken(true);
 
 		return $this;
 	}
@@ -123,7 +124,7 @@ class AccessToken implements AccessTokenInterface
 		return $this->cachePrefix . md5(json_encode($this->getCredentials()));
 	}
 
-	public function getCredentials()
+	protected function getCredentials()
 	{
 		return [
 			'appkey'    => $this->app['config']['app_key'],

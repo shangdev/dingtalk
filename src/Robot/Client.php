@@ -8,6 +8,27 @@ use Rateltalk\DingTalk\Kernal\Exceptions\InvalidArgumentException;
 class Client extends BaseClient
 {
 	/**
+	 * 文本消息
+	 *
+	 * @param string $content
+	 *
+	 * @return mixed
+	 * @throws InvalidArgumentException
+	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 */
+	public function text($content = '')
+	{
+		$message = [
+			'msgtype' => 'text',
+			'text' => [
+				'content' => $content,
+			],
+		];
+
+		return $this->send($message);
+	}
+
+	/**
 	 * 消息发送
 	 *
 	 * @param array $message
