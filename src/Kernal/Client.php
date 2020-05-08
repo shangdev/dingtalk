@@ -30,7 +30,7 @@ class Client extends BaseClient
 	 */
 	public function withAccessTokenMiddleware()
 	{
-		if ($this->getMiddlewares()['access_token']) {
+		if (isset($this->getMiddlewares()['access_token'])) {
 			return $this;
 		}
 
@@ -59,7 +59,7 @@ class Client extends BaseClient
 	 */
 	public function withRetryMiddleware()
 	{
-		if ($this->getMiddlewares()['retry']) {
+		if (isset($this->getMiddlewares()['retry'])) {
 			return $this;
 		}
 
